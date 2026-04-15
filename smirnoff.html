@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smirnoff Caipirosca — Ricardo Kawano</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #FAFAF8;
+      --ink:     #111110;
+      --gold:    #C8A45A;
+      --muted:   #8A8A84;
+      --rule:    #E4E4DF;
+      --serif:   Georgia, "Times New Roman", serif;
+      --sans:    -apple-system, system-ui, sans-serif;
+      --nav-h:   56px;
+      --max:     1320px;
+      --gutter:  clamp(24px, 5vw, 80px);
+      --ease:    cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --t:       0.4s;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:    #111110;
+        --ink:   #F0EFE8;
+        --rule:  #2A2A26;
+        --muted: #6A6A64;
+      }
+    }
+
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ──────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      z-index: 9999;
+      transition: background var(--t), border-color var(--t);
+    }
+    nav.scrolled {
+      background: rgba(250,250,248,0.92);
+      backdrop-filter: saturate(180%) blur(24px);
+      -webkit-backdrop-filter: saturate(180%) blur(24px);
+      border-bottom: 1px solid var(--rule);
+    }
+    @media (prefers-color-scheme: dark) {
+      nav.scrolled { background: rgba(17,17,16,0.92); }
+    }
+    .nav-inner {
+      max-width: var(--max); margin: 0 auto;
+      padding: 0 var(--gutter); height: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: var(--serif); font-style: italic;
+      font-size: 20px; font-weight: 400; color: #fff;
+      letter-spacing: -0.01em; text-decoration: none;
+      transition: color var(--t);
+    }
+    nav.scrolled .nav-logo { color: var(--ink); }
+    .nav-back {
+      font-family: var(--sans); font-size: 12px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.7); text-decoration: none;
+      display: flex; align-items: center; gap: 8px;
+      transition: color var(--t);
+    }
+    .nav-back:hover { color: #fff; }
+    nav.scrolled .nav-back { color: var(--muted); }
+    nav.scrolled .nav-back:hover { color: var(--ink); }
+    .nav-back svg { transition: transform var(--t) var(--ease); }
+    .nav-back:hover svg { transform: translateX(-3px); }
+
+    .lang-toggle {
+      background: none; border: 1px solid rgba(255,255,255,0.35);
+      color: rgba(255,255,255,0.7); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 5px 10px; border-radius: 2px; cursor: pointer;
+      transition: color var(--t), border-color var(--t), background var(--t);
+      margin-left: 16px;
+    }
+    .lang-toggle:hover { color: #fff; border-color: rgba(255,255,255,0.7); }
+    nav.scrolled .lang-toggle { color: var(--muted); border-color: var(--rule); }
+    nav.scrolled .lang-toggle:hover { color: var(--ink); border-color: var(--muted); }
+
+    /* ── HERO ──────────────────────────────────────────── */
+    .hero {
+      position: relative; height: 100vh; min-height: 640px;
+      overflow: hidden; display: flex; align-items: flex-end;
+    }
+    .hero-img {
+      position: absolute; inset: 0;
+      background-image: url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/228-smirnoff01.png?v=1587164914');
+      background-size: cover; background-position: center 30%;
+      transform: scale(1.04);
+      transition: transform 1.4s var(--ease);
+    }
+    .hero-img.loaded { transform: scale(1); }
+    .hero-gradient {
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(to right, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 45%, rgba(0,0,0,0.08) 100%),
+        linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 55%);
+    }
+    .hero-tint {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 70% 35%, rgba(5,15,60,0.5) 0%, transparent 65%);
+      mix-blend-mode: multiply;
+    }
+    .hero-content {
+      position: relative; z-index: 2; width: 100%;
+      max-width: var(--max); margin: 0 auto;
+      padding: 0 var(--gutter);
+      padding-bottom: clamp(60px, 8vh, 100px);
+    }
+    .hero-eyebrow {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 20px; display: block;
+    }
+    .hero-title {
+      font-family: var(--serif); font-style: italic; font-weight: 400;
+      font-size: clamp(48px, 7vw, 100px);
+      line-height: 0.93; letter-spacing: -0.03em;
+      color: #fff; margin-bottom: 32px;
+    }
+    .hero-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .hero-tag {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: rgba(255,255,255,0.65);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 5px 12px; border-radius: 2px;
+    }
+    .hero-ghost {
+      position: absolute; right: var(--gutter); bottom: clamp(50px, 7vh, 90px);
+      font-family: var(--serif); font-style: italic;
+      font-size: clamp(80px, 14vw, 180px); font-weight: 400;
+      line-height: 1; letter-spacing: -0.04em;
+      color: rgba(255,255,255,0.055);
+      user-select: none; pointer-events: none;
+    }
+    .hero-scroll {
+      position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      color: rgba(255,255,255,0.4); font-size: 10px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase; z-index: 3;
+      animation: bounce 2.4s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ── BODY WRAPPER ──────────────────────────────────── */
+    .body-wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
+
+    /* ── OVERVIEW ──────────────────────────────────────── */
+    .overview {
+      padding: clamp(80px, 12vh, 140px) 0 0;
+      display: grid; grid-template-columns: 38fr 62fr;
+      gap: clamp(40px, 6vw, 100px); align-items: start;
+    }
+    .section-label {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 20px; display: block;
+    }
+    .pull-quote {
+      font-family: var(--serif); font-style: italic;
+      font-size: clamp(21px, 2.6vw, 32px); font-weight: 400;
+      line-height: 1.35; letter-spacing: -0.02em; color: var(--ink);
+    }
+    .body-text {
+      font-size: 17px; line-height: 1.75; color: var(--muted); max-width: 580px;
+    }
+    .body-text p + p { margin-top: 20px; }
+
+    /* ── GALLERY ───────────────────────────────────────── */
+    .gallery-section { padding: clamp(60px, 10vh, 120px) 0 0; }
+    .gallery-label-row {
+      display: flex; align-items: center;
+      justify-content: space-between; margin-bottom: 28px;
+    }
+    .gallery-count {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+    }
+    .gallery-grid { display: grid; gap: 10px; }
+    .g-2 { grid-template-columns: 1fr 1fr; }
+    .g-3 { grid-template-columns: 1fr 1fr 1fr; margin-top: 10px; }
+    .gallery-item {
+      position: relative; overflow: hidden;
+      border-radius: 3px; cursor: zoom-in; background: var(--rule);
+    }
+    .gallery-item .frame {
+      width: 100%; aspect-ratio: 4/3;
+      background-size: cover; background-position: center; display: block;
+      transition: transform 0.5s var(--ease), filter 0.3s;
+    }
+    .gallery-item.sq .frame { aspect-ratio: 1; }
+    .gallery-item.wide .frame { aspect-ratio: 16/7; }
+    .gallery-item:hover .frame { transform: scale(1.04); filter: brightness(1.04); }
+    .gallery-item::after {
+      content: attr(data-caption);
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 14px 16px;
+      background: linear-gradient(to top, rgba(0,0,0,0.65), transparent);
+      font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; color: rgba(255,255,255,0.8);
+      opacity: 0; transform: translateY(4px);
+      transition: opacity 0.3s, transform 0.3s; pointer-events: none;
+    }
+    .gallery-item:hover::after { opacity: 1; transform: translateY(0); }
+    .gallery-item .zoom-icon {
+      position: absolute; top: 12px; right: 12px;
+      width: 32px; height: 32px;
+      background: rgba(255,255,255,0.15); backdrop-filter: blur(8px);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      opacity: 0; transform: scale(0.85);
+      transition: opacity 0.3s, transform 0.3s; color: #fff;
+    }
+    .gallery-item:hover .zoom-icon { opacity: 1; transform: scale(1); }
+
+    /* ── CALLOUT ───────────────────────────────────────── */
+    .callout {
+      margin-top: clamp(60px, 10vh, 120px);
+      background: var(--ink); border-radius: 6px;
+      padding: clamp(40px, 6vw, 72px);
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: clamp(32px, 5vw, 80px); align-items: center;
+    }
+    .callout-left {}
+    .callout-number {
+      font-family: var(--serif); font-style: italic;
+      font-size: clamp(56px, 8vw, 110px); font-weight: 400;
+      line-height: 1; letter-spacing: -0.04em; color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .callout-sub {
+      font-size: 13px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(250,250,248,0.35);
+    }
+    .callout-text {
+      font-family: var(--serif); font-style: italic;
+      font-size: clamp(17px, 2vw, 24px);
+      line-height: 1.5; letter-spacing: -0.01em;
+      color: rgba(250,250,248,0.82);
+    }
+    .callout-text em { color: var(--gold); font-style: normal; }
+
+    /* ── AWARDS ────────────────────────────────────────── */
+    .awards-section {
+      margin-top: clamp(40px, 6vh, 60px);
+      background: var(--ink); border-radius: 6px;
+      padding: clamp(36px, 5vw, 64px);
+    }
+    .awards-label {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 28px; display: block;
+    }
+    .awards-list { list-style: none; border-top: 1px solid rgba(255,255,255,0.1); }
+    .award-row {
+      display: flex; align-items: center; gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      transition: border-color 0.2s;
+    }
+    .award-row:hover { border-bottom-color: rgba(200,164,90,0.3); }
+    .award-icon { flex-shrink: 0; width: 22px; display: flex; align-items: center; justify-content: center; color: rgba(240,239,232,0.65); }
+    .award-festival { flex: 1; font-size: 14px; font-weight: 500; color: #F0EFE8; letter-spacing: -0.01em; }
+    .award-category { flex-shrink: 0; font-size: 11px; color: rgba(240,239,232,0.38); letter-spacing: 0.04em; }
+    .award-medal {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 3px 9px; border-radius: 100px;
+    }
+    .award-medal.m-1st    { background: rgba(200,164,90,0.18); color: var(--gold); }
+    .award-medal.m-gold   { background: rgba(212,175,55,0.14); color: #D4AF37; }
+    .award-medal.m-silver { background: rgba(180,180,180,0.14); color: #AEAEB2; }
+    .award-medal.m-bronze { background: rgba(180,120,60,0.14); color: #C8863A; }
+    .award-medal.m-gp     { background: rgba(200,164,90,0.18); color: var(--gold); }
+
+    /* ── CREDITS ───────────────────────────────────────── */
+    .credits-section { padding: 40px 0 0; }
+    .credits-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+    .credits-table tr { border-bottom: 1px solid var(--rule); }
+    .credits-table tr:first-child { border-top: 1px solid var(--rule); }
+    .credits-table td { padding: 8px 0; vertical-align: top; }
+    .td-role {
+      width: 36%; font-size: 10px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); padding-right: 32px;
+    }
+    .td-name { font-size: 13px; font-weight: 400; color: var(--ink); line-height: 1.4; }
+
+    /* ── PROJ NAV ──────────────────────────────────────── */
+    .proj-nav {
+      border-top: 1px solid var(--rule);
+      padding: clamp(48px, 8vh, 80px) 0;
+      display: flex; justify-content: space-between;
+      align-items: center; gap: 24px;
+    }
+    .proj-nav-link { display: flex; flex-direction: column; gap: 8px; text-decoration: none; }
+    .proj-nav-link.right { text-align: right; align-items: flex-end; }
+    .proj-nav-dir {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+    }
+    .proj-nav-title {
+      font-family: var(--serif); font-style: italic;
+      font-size: clamp(20px, 2.5vw, 28px); font-weight: 400;
+      letter-spacing: -0.02em; color: var(--ink); transition: color var(--t);
+    }
+    .proj-nav-link:hover .proj-nav-title { color: var(--gold); }
+
+    /* ── FOOTER ────────────────────────────────────────── */
+    footer { border-top: 1px solid var(--rule); padding: 32px 0; }
+    .footer-inner {
+      max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-copy { font-size: 12px; color: var(--muted); }
+    .footer-link { font-size: 12px; color: var(--muted); text-decoration: none; transition: color var(--t); }
+    .footer-link:hover { color: var(--ink); }
+
+    /* ── LIGHTBOX ──────────────────────────────────────── */
+    .lightbox {
+      position: fixed; inset: 0; z-index: 99999;
+      background: rgba(10,10,9,0.96);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    .lightbox.open { opacity: 1; pointer-events: all; }
+    .lightbox-img {
+      max-width: 90vw; max-height: 86vh; object-fit: contain;
+      border-radius: 3px; transform: scale(0.95);
+      transition: transform 0.3s var(--ease); display: block;
+    }
+    .lightbox-frame {
+      max-width: 90vw; max-height: 86vh;
+      background-size: contain; background-repeat: no-repeat;
+      background-position: center; border-radius: 3px;
+      transform: scale(0.95); transition: transform 0.3s var(--ease);
+    }
+    .lightbox.open .lightbox-img,
+    .lightbox.open .lightbox-frame { transform: scale(1); }
+    .lightbox-close {
+      position: absolute; top: 24px; right: 28px;
+      background: none; border: none; color: rgba(255,255,255,0.55);
+      font-size: 28px; cursor: pointer; line-height: 1; padding: 8px;
+      transition: color 0.2s, transform 0.2s;
+    }
+    .lightbox-close:hover { color: #fff; transform: rotate(90deg); }
+    .lightbox-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.7); width: 44px; height: 44px;
+      border-radius: 50%; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, color 0.2s; font-size: 20px;
+    }
+    .lightbox-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+    .lightbox-prev { left: 24px; }
+    .lightbox-next { right: 24px; }
+    .lightbox-counter {
+      position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+      font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: rgba(255,255,255,0.35);
+    }
+
+    /* ── REVEAL ────────────────────────────────────────── */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .d1 { transition-delay: 0.1s; } .d2 { transition-delay: 0.2s; }
+    .d3 { transition-delay: 0.3s; } .d4 { transition-delay: 0.4s; }
+
+    /* ── RESPONSIVE ────────────────────────────────────── */
+    @media (max-width: 860px) {
+      .overview { grid-template-columns: 1fr; }
+      .callout { grid-template-columns: 1fr; gap: 24px; }
+    }
+    @media (max-width: 640px) {
+      .g-2, .g-3 { grid-template-columns: 1fr; }
+      .lightbox-prev { left: 8px; }
+      .lightbox-next { right: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="portfolio-v2.html" class="nav-logo">RK</a>
+    <div style="display:flex;align-items:center;">
+      <a href="portfolio-v2.html#work" class="nav-back">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span data-pt="Todos os Trabalhos" data-en="All Work">All Work</span>
+      </a>
+      <button class="lang-toggle" id="langToggle">PT</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-img" id="heroImg"></div>
+  <div class="hero-gradient"></div>
+  <div class="hero-tint"></div>
+  <div class="hero-content">
+    <span class="hero-eyebrow">Diageo · Smirnoff · JWT</span>
+    <h1 class="hero-title">Smirnoff<br>Caipirosca</h1>
+    <div class="hero-tags">
+      <span class="hero-tag">Packaging Design</span>
+      <span class="hero-tag">Art Direction</span>
+      <span class="hero-tag">Spirits</span>
+    </div>
+  </div>
+  <span class="hero-ghost">S</span>
+  <div class="hero-scroll">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M8 3v10M3 9l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Scroll
+  </div>
+</section>
+
+<!-- BODY -->
+<div class="body-wrap">
+
+  <!-- Overview -->
+  <div class="overview">
+    <div class="overview-left reveal">
+      <span class="section-label" data-pt="Visão Geral" data-en="Overview">Visão Geral</span>
+      <p class="pull-quote" data-pt="&quot;Uma embalagem premium para a vodka mais vendida do mundo — que ganhou o The Dieline Awards.&quot;" data-en="&quot;A premium packaging redesign for the world's best-selling vodka — winner of The Dieline Awards.&quot;">
+        "Uma embalagem premium para a vodka mais vendida do mundo — que ganhou o The Dieline Awards."
+      </p>
+    </div>
+    <div class="overview-right reveal d2">
+      <div class="body-text">
+        <p data-pt="O projeto de redesign das embalagens da Caipirosca Smirnoff buscou elevar o posicionamento da linha sem perder a identidade icônica da marca. O trabalho envolveu o desenvolvimento de novas estruturas visuais para a família completa de sabores — com tratamento fotográfico das frutas, hierarquia tipográfica renovada e acabamentos especiais em impressão." data-en="The Smirnoff Caipirosca packaging redesign aimed to elevate the line's positioning without losing the brand's iconic identity. The work involved developing new visual structures for the full flavor family — with photographic fruit treatments, refreshed typographic hierarchy, and special print finishes.">O projeto de redesign das embalagens da Caipirosca Smirnoff buscou elevar o posicionamento da linha sem perder a identidade icônica da marca. O trabalho envolveu o desenvolvimento de novas estruturas visuais para a família completa de sabores — com tratamento fotográfico das frutas, hierarquia tipográfica renovada e acabamentos especiais em impressão.</p>
+        <p data-pt="O resultado foi reconhecido internacionalmente com o 1º Lugar no The Dieline Awards, principal premiação global de design de embalagem, na categoria Spirits." data-en="The result was recognized internationally with 1st Place at The Dieline Awards, the world's leading packaging design competition, in the Spirits category.">O resultado foi reconhecido internacionalmente com o 1º Lugar no The Dieline Awards, principal premiação global de design de embalagem, na categoria Spirits.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gallery -->
+  <div class="gallery-section">
+    <div class="gallery-label-row reveal">
+      <span class="section-label" style="margin-bottom:0" data-pt="Imagens" data-en="Images">Imagens</span>
+      <span class="gallery-count" data-pt="5 imagens — clique para expandir" data-en="5 images — click to expand">5 imagens — clique para expandir</span>
+    </div>
+
+    <!-- Row 1: full width 16/7 -->
+    <div class="gallery-grid reveal d1">
+      <div class="gallery-item wide"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/228-smirnoff01.png?v=1587164914"
+           data-caption="Linha Caipirosca — vista geral">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/228-smirnoff01.png?v=1587164914'); aspect-ratio:16/7;"></div>
+        <div class="zoom-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      </div>
+    </div>
+
+    <!-- Row 2: 2 cols, aspect 1 -->
+    <div class="gallery-grid g-2 reveal d2" style="margin-top:10px">
+      <div class="gallery-item sq"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/408-smirnoff02-1.png?v=1587164915"
+           data-caption="Embalagem — detalhe">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/408-smirnoff02-1.png?v=1587164915'); aspect-ratio:1;"></div>
+        <div class="zoom-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      </div>
+      <div class="gallery-item sq"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/244-smirnoff03.png?v=1587164914"
+           data-caption="Tipografia e frutas">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/244-smirnoff03.png?v=1587164914'); aspect-ratio:1;"></div>
+        <div class="zoom-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      </div>
+    </div>
+
+    <!-- Row 3: 2 cols, aspect 4/3 -->
+    <div class="gallery-grid g-2 reveal d3" style="margin-top:10px">
+      <div class="gallery-item"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/245-smirnoff04.png?v=1587164914"
+           data-caption="Família completa">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/245-smirnoff04.png?v=1587164914');"></div>
+        <div class="zoom-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      </div>
+      <div class="gallery-item"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/385-smirnoff05.png?v=1587164915"
+           data-caption="Acabamentos especiais">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/385-smirnoff05.png?v=1587164915');"></div>
+        <div class="zoom-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Callout -->
+  <div class="callout reveal">
+    <div class="callout-left">
+      <p class="callout-number">1º</p>
+      <p class="callout-sub" data-pt="The Dieline Awards — Spirits" data-en="The Dieline Awards — Spirits">The Dieline Awards — Spirits</p>
+    </div>
+    <div class="callout-right">
+      <p class="callout-text" data-pt="Reconhecido como o melhor design de embalagem de destilados do mundo — <em>principal premiação global de packaging.</em>" data-en="Recognized as the world's best spirits packaging design — <em>the leading global packaging award.</em>">
+        Reconhecido como o melhor design de embalagem de destilados do mundo — <em>principal premiação global de packaging.</em>
+      </p>
+    </div>
+  </div>
+
+  <!-- Awards -->
+  <div class="awards-section reveal">
+    <span class="awards-label" data-pt="Premiações" data-en="Awards">Premiações</span>
+    <ul class="awards-list">
+      <li class="award-row">
+        <span class="award-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 76.5" width="13" height="14" fill="currentColor" style="flex-shrink:0;vertical-align:middle"><g>
+    <path d="M72,58.94V17.2l-.13-.1L51.3,0H0v76.5h51.3l20.35-17.1.35-.29v-.17ZM42.3,57.6h-23.4V18.9h23.04l11.16,9.05v20.64l-10.8,9.01Z"/>
+  </g></svg></span>
+        <span class="award-festival">The Dieline Awards</span><span class="award-category">Spirits</span>
+        <span class="award-medal m-1st">1º Lugar</span>
+      </li>
+      <li class="award-row">
+        <span class="award-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 83 71.71" width="14" height="12" fill="currentColor" style="flex-shrink:0;vertical-align:middle"><g>
+    <g>
+      <path d="M41.32,71.71c-8.55-.02-15.03-1.68-21.22-4.7-1.51-.74-1.96-1.66-1.83-3.26,1.25-15.49,8.43-27.38,21.99-34.94,13.17-7.34,26.81-7.37,40.47-1.05,1.51.7,2.37,1.42,2.26,3.47-1.24,23.61-21.29,40.76-41.67,40.49ZM58.84,30.52c7.69,9.82,7.09,19.98-1.29,25.68-4.05,2.75-8.5,3.71-13.26,2.57-6.62-1.59-10.63-5.97-12.53-12.75-.49.77-.88,1.2-1.07,1.69-1.31,3.55-2.76,7.06-3.79,10.69-.82,2.9-.59,3.02,2.34,4,12.73,4.23,24.32,2.12,34.49-6.63,6.16-5.3,9.69-12.21,10.84-20.26.1-.68-.18-1.88-.63-2.09-4.68-2.16-9.64-3.06-15.09-2.9Z"/>
+      <path d="M12.43,61.98c-5.66-4.7-9.68-10.05-12.43-16.71,3.72-.82,7.24-1.59,11-2.41-2.12-3.92-4.12-7.62-6.2-11.48h13.35c-1.04-4.13-2.09-8.26-3.26-12.89,4.5,1.27,8.63,2.45,13.01,3.69v-13.42c4.08,2.31,7.77,4.4,11.77,6.67,1.11-4.32,2.17-8.43,3.32-12.92,3.38,3.19,6.49,6.12,9.77,9.21,2.11-3.87,4.12-7.58,6.38-11.72,2.47,3.85,4.75,7.42,7.2,11.23,2.58-2.76,5.02-5.37,7.62-8.16,4.47,5.67,7.14,11.81,8.43,18.96-15.56-6.46-30.7-6.36-45.25,1.86-14.58,8.24-22.58,21.07-24.73,38.08Z"/>
+    </g>
+  </g></svg></span>
+        <span class="award-festival">El Ojo</span><span class="award-category">Design</span>
+        <span class="award-medal m-gold">Gold</span>
+      </li>
+      <li class="award-row">
+        <span class="award-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 71.84 75.52" width="13" height="14" fill="currentColor" style="flex-shrink:0;vertical-align:middle"><g>
+    <path d="M68.28,45.71c-5.25,1.94-6.66,6.2-8.04,10.43-1.55,4.73-3.36,9.29-6.85,12.99-5.31,5.63-12.11,7.96-19.51,5.27-3.63-1.32-6.27-4.04-8.76-6.89-2.89-3.3-5.89-6.47-10.18-8.02-3.82-1.38-7.8-1.59-11.79-1.67-3.04-.07-3.05,0-3.07-2.98,0-1.14.12-2.28.04-3.42-.08-1.14.44-1.37,1.44-1.36,3.28.04,6.56.03,9.85,0,.63,0,1.65.34,1.64-.79,0-1.11-.97-1.11-1.8-1.11-3.18,0-6.36-.04-9.55.02-1.16.02-1.62-.31-1.56-1.54.07-1.41-.09-2.83-.12-4.25-.03-1.19.39-1.86,1.75-1.81,2.47.08,4.95.04,7.42.04.79,0,1.66-.04,1.66-1.09,0-1.1-.95-1.03-1.68-1.07-1.19-.07-2.38-.07-3.57-.06-1.14,0-1.65-.52-1.61-1.66.04-1.14.08-2.29.02-3.42-.06-1.26.51-1.66,1.71-1.65,3.08.04,6.16.01,9.27.01.41-1.3.78-2.47,1.15-3.64.25-.8-.1-1.27-.84-1.54-2.36-.87-4.7-1.8-7.08-2.6-1.03-.34-1.16-1.04-.79-1.74.22-.42,1.09-.88,1.48-.76,1.84.61,3.64,1.37,5.42,2.15,3.31,1.45,3.3,1.47,5.27-1.4,1.61-2.34,1.62-2.35-.48-4.28-1.61-1.48-3.27-2.9-4.88-4.38-.7-.64-1.28-1.33-.36-2.28.67-.7,1.25-.51,1.84.04,1.99,1.83,4.02,3.62,5.96,5.51,1.52,1.47,1.45,1.5,3.07.22.96-.76,1.99-1.42,3.07-2.18-1.52-2.98-3.02-5.98-4.58-8.95-.43-.83-.63-1.56.3-2.07.96-.53,1.5.1,1.9.89,1.32,2.58,2.66,5.14,3.92,7.75.51,1.05.99,1.54,2.28.97,1.23-.54,2.63-.79,3.99-.96.95-.12,1.18-.5,1.14-1.37-.13-3.04-.21-6.08-.31-9.12-.03-.93-.13-1.86,1.26-1.92,1.32-.05,1.49.85,1.51,1.77.08,2.94.13,5.89.1,8.83-.01,1.11.08,1.82,1.48,1.81.98,0,1.97.27,2.92.55,1.03.3,1.44-.12,1.76-1.03,1.07-2.99,2.2-5.96,3.33-8.93.3-.78.5-1.76,1.71-1.47,1.15.27,1.48,1.15.94,2.5-.94,2.33-1.91,4.65-2.86,6.98-.39.96-.76,1.92-1.18,2.96,1.43.98,2.81,1.98,4.25,2.88.28.17.95.12,1.19-.11,2-1.89,3.94-3.84,5.89-5.77.61-.6,1.2-1.21,1.79-1.83.61-.64,1.25-.66,1.88-.09.68.62.49,1.26-.08,1.86-2.29,2.35-4.53,4.74-6.88,7.03-1.41,1.38-1.45,1.46-.3,3.01.62.83,1.05,1.79,1.56,2.69.23.4.45.8.7,1.25,3.2-1.28,6.27-2.52,9.34-3.75.53-.21,1.06-.41,1.61-.56.74-.2,1.45-.25,1.69.73.21.84.07,1.42-.88,1.78-3.25,1.2-6.46,2.51-9.7,3.71-.92.34-1.34.72-.97,1.74.24.66.35,1.38.44,2.08.31,2.33.3,2.34,2.7,2.34,2.9,0,5.8,0,8.71,0,.74,0,1.49.02,1.44,1.09-.05,1.02-.68,1.24-1.55,1.24-3.14-.02-6.28.06-9.42-.07-1.48-.06-1.96.55-2.22,1.85-1.1,5.5-4.36,9.43-9.22,12.01-8.77,4.66-19.55,1.7-24.33-6.72-.97-1.7-1.49-3.68-2.01-5.59-.29-1.07-.58-1.69-1.84-1.57-1.13.11-2.28.04-3.42-.01-.95-.05-1.25.34-1.19,1.26.42,6.49,2.81,11.95,8.15,15.92,4.4,3.27,9.31,4.98,14.79,4.48,3.88-.35,7.27-2.03,10.16-4.71,2.47-2.3,4.9-4.65,7.53-6.74,2.66-2.11,5.78-2.25,8.93-1.14.62.22,1.13.75,2.08,1.41ZM24.81,35.2c.08.77.08,1.28.19,1.78,1.07,5.13,4.24,8.68,8.78,10.92,6.12,3.02,11.93,1.78,17.35-1.95,3.11-2.14,4.94-5.21,5.85-8.84.35-1.41-.03-1.84-1.45-1.84-1.09,0-2.2.08-3.28-.06-1.37-.18-1.9.35-2.27,1.65-1.08,3.78-3.81,5.94-7.5,6.89-3.67.94-7.09.49-9.88-2.36-1.26-1.29-2.01-2.83-2.28-4.65-.08-.55-.6-1.42-1.01-1.47-1.43-.18-2.9-.07-4.51-.07ZM48.53,35.23c-2.03.41-3.92-.64-5.65.87-.67.59-1.04-.1-1.06-.98-.02-1-.09-2.15-.61-2.94-1.06-1.63-2.8-2.31-4.72-1.95-1.87.35-3.3,1.44-3.93,3.32-1.08,3.23.41,6.58,3.51,8.03,3.11,1.45,7.16.72,9.92-1.78,1.28-1.16,2.33-2.44,2.54-4.57ZM52.93,20.95c-1.47,1.43-2.87,2.58-3.96,3.98-.3.39.25,1.54.58,2.26.12.26.82.47,1.14.36,1.34-.45,2.67-.98,3.94-1.61.32-.16.67-.92.54-1.17-.65-1.29-1.45-2.5-2.25-3.81ZM36.87,17.34s-.02,0-.03,0c0-.47-.04-.95,0-1.42.13-1.35-.56-1.66-1.72-1.39-1.1.26-2.22.48-3.29.85-.26.09-.54.83-.42,1.12.45,1.14,1.02,2.23,1.62,3.3.18.32.59.69.92.71,2.16.14,2.9-.6,2.91-2.75,0-.14,0-.28,0-.43ZM16.55,32.9c2.01,0,3.8.07,5.57-.06.37-.03.88-.77.97-1.25.12-.65.13-1.75-.23-1.98-1.1-.69-2.38-1.12-3.64-1.49-.34-.1-1.1.25-1.24.57-.54,1.28-.91,2.63-1.43,4.21ZM56.5,28.02c-1.95.77-3.64,1.35-5.24,2.14-.41.2-.66,1.05-.69,1.62-.02.37.47,1.09.76,1.11,1.96.1,3.92.05,6.08.05-.33-1.77-.6-3.24-.91-4.92ZM51.02,18.9c-1.53-1.02-2.83-1.89-4.32-2.88-.69,1.81-1.36,3.28-1.76,4.82-.12.45.44,1.22.88,1.64.32.3,1.2.51,1.42.31,1.25-1.14,2.38-2.42,3.78-3.89ZM26.43,24.7c-1.25-1.12-2.48-2.22-3.88-3.48-1.05,1.43-2.01,2.75-3.1,4.23,1.67.65,2.92,1.21,4.23,1.62.37.12,1.02-.05,1.3-.33.55-.56.94-1.28,1.46-2.03ZM42.32,20.24c.63-1.64,1.24-3.22,1.91-4.97-.64-.15-1.18-.26-1.7-.4-3.85-1.04-3.11-.2-3.11,2.56,0,2.55.04,2.55,2.9,2.81ZM24.61,19.35c1.23,1.16,2.26,2.2,3.36,3.14.25.21.83.24,1.15.11,1.75-.71,1.96-1.36,1.08-3.02-.48-.91-.96-1.83-1.55-2.96-1.37.92-2.63,1.77-4.05,2.73ZM36.85,27.52c.16-.08.31-.17.47-.25-.1-1.44-.12-2.9-.36-4.32-.05-.32-.87-.68-1.35-.69-.32,0-1,.71-.94.85.66,1.5,1.43,2.95,2.17,4.41ZM26.33,28.26c2.09.76,3.88,1.42,5.68,2.07.07-.13.14-.26.21-.4-1.4-1.2-2.79-2.41-4.26-3.67-.57.7-.98,1.2-1.63,2ZM30.32,32.78c.03-.12.05-.24.08-.36-1.68-.63-3.35-1.27-5.13-1.94-.14.86-.26,1.54-.38,2.29h5.44ZM30.09,24.5c1.39,1.29,2.69,2.48,3.98,3.68-.22-1.22-.67-2.25-1.14-3.27-.76-1.66-1.04-1.72-2.85-.41ZM44.01,29.62c.1.16.19.32.29.47.71-.3,1.42-.6,2.14-.89,1.59-.64,1.61-.78.52-2.09-.98.83-1.96,1.67-2.94,2.51ZM43.81,23.47c-.58,1.57-1.07,2.86-1.55,4.16.1.06.19.12.29.18.93-1,1.85-2,2.85-3.08-.52-.41-.91-.72-1.59-1.25ZM39.64,26.37c.1,0,.2.02.31.02.36-.91.73-1.82,1.07-2.74.47-1.29.18-1.58-1.37-1.32v4.04ZM48.55,31.04c-1.46.56-2.68,1.04-3.91,1.51.03.09.05.18.08.26h4.08c-.08-.6-.15-1.05-.25-1.78Z"/>
+  </g></svg></span>
+        <span class="award-festival">FIAP</span><span class="award-category">Design</span>
+        <span class="award-medal m-gold">Gold · Silver</span>
+      </li>
+      <li class="award-row">
+        <span class="award-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 81 81" width="14" height="14" fill="currentColor" style="flex-shrink:0;vertical-align:middle"><g>
+    <g>
+      <path d="M21.58,37.89c1.64-.94,3.42-1.23,5.25-1.1.71.05,1.4.44,2.09.7.46.17.91.55,1.37.56,1.92.07,3.85.05,5.77.02.2,0,.54-.28.56-.45.06-.59.46-.68.9-.74,2.84-.35,5.62-.09,8.33.83.79.27,1.6.48,2.39.72.01-.06.03-.12.04-.19-.23-.13-.46-.27-.7-.39-3.24-1.64-6.72-2.46-10.31-2.86-4.88-.55-9.76-.42-14.6.44-1.93.34-3.81.87-5.5,1.92-.19.12-.31.34-.47.51.2.17.38.43.61.48,1.45.29,2.92.32,4.24-.44Z"/>
+      <path d="M40.5,0C18.13,0,0,18.13,0,40.5s18.13,40.5,40.5,40.5,40.5-18.13,40.5-40.5S62.87,0,40.5,0ZM16.14,37.84c1.55-4.73,3.11-9.46,6.19-13.48,1.08-1.42,2.29-2.71,3.82-3.65,2.63-1.6,4.54-1.17,6.31,1.34,1.23,1.75,2.03,3.69,2.52,5.74,3.8-.95,7.08-.18,9.75,2.66,1.67,1.77,2.8,3.9,3.81,6.1.24.51.41,1.06.66,1.57.13.27.34.52.57.72.28.25.62.43.93.64-.03.06-.05.12-.08.19-.8-.28-1.6-.52-2.38-.83-3.17-1.26-6.47-1.53-9.83-1.25-.44.04-1.02.02-.82.82.03.13-.34.47-.58.54-.5.14-1.03.2-1.55.22-1.84.06-3.68.1-5.47-.44-.3-.09-.61-.23-.84-.43-.81-.7-1.76-.86-2.79-.86-1.98,0-3.87.21-5.6,1.32-1.16.74-2.53.62-3.85.42-.47-.07-.92-.83-.76-1.31ZM15.1,38.9c.12-.07.35-.12.42-.06.11.1.2.33.16.45-.16.46.06.66.45.74,1.79.34,3.55.28,5.12-.74.8-.52,1.58-.98,2.52-1.11,1.43-.19,2.85-.24,4.25.21.3.1.62.21.85.42,1,.93,2.22,1.35,3.53,1.41,1.69.08,3.4.09,5.09.04.55-.02,1.19-.17,1.05-1.08-.03-.18.51-.61.81-.63,1.35-.1,2.72-.13,4.08-.11,2.94.06,5.65,1.01,8.3,2.21.45.2.94.4,1.43.43,1.27.08,2.09.97,3.09,1.52-.02.07-.05.14-.07.21-.57-.15-1.16-.24-1.71-.46-1.48-.58-2.93-1.22-4.39-1.83-1.83-.75-3.76-1.04-5.72-1.05-1.23,0-2.46,0-3.68.1-.92.07-.95.21-.6,1.05.17.4-.07.63-.4.72-.61.17-1.24.41-1.85.39-2.08-.07-4.17-.2-6.24-.39-.79-.07-1.45-.48-2.01-1.14-.82-.95-2.05-1.14-3.23-1.24-1.41-.11-2.82-.07-4.16.48-.31.13-.63.3-.85.54-.64.68-1.42,1.09-2.33,1.13-1.06.05-2.13.05-3.19-.01-.58-.03-.95-.36-.83-1.06.04-.22-.18-.49-.31-.82.08-.07.24-.24.42-.34ZM13.11,40.67c.26-.29.54-.4.9-.17.34.21.54.43.42.89-.05.21.04.58.2.69.34.24.75.46,1.16.52,1.41.18,2.81.05,4.17-.39.29-.09.64-.26.78-.51.66-1.14,1.76-1.45,2.92-1.62,1.73-.26,3.45-.18,5.09.5.41.17.87.36,1.17.67,1.58,1.63,3.63,2.1,5.76,2.29,1.33.12,2.68.06,4.02.02.44-.01.9-.14,1.32-.3.48-.18.66-.52.37-1.02-.42-.74-.36-.91.45-1.15,2.22-.65,4.45-.48,6.68-.05,2.13.41,4.14,1.13,6.09,2.1,1.33.66,2.8,1.02,4.2,1.55.53.2,1.06.46,1.53.79.56.4,1.06.89,1.58,1.34-.04.08-.08.16-.12.24-.96-.36-1.93-.68-2.86-1.09-.68-.3-1.33-.69-1.94-1.12-2.18-1.52-4.7-2.05-7.25-2.3-1.7-.17-3.44-.05-5.16-.05-.22,0-.45.08-.67.14-1.08.28-1.14.43-.58,1.36.35.58.27,1.01-.36,1.26-.58.23-1.21.43-1.83.47-3.04.2-5.99-.21-8.75-1.55-.57-.28-1.04-.78-1.56-1.18-.18-.14-.32-.34-.52-.43-2.54-1.16-5.15-1.74-7.92-.9-.64.19-1.07.53-1.35,1.2-.18.43-.72.82-1.19,1.01-1.78.71-3.61.63-5.39-.05-.31-.12-.7-.6-.67-.88.11-.99-.29-1.46-1.34-1.52.28-.31.48-.52.67-.74ZM11.18,42.98c.27-.45,1.35-.17,1.63.44.12.28.14.61.15.92.01.68.29,1.19.93,1.44,1.79.7,3.62.8,5.48.36.73-.17,1.23-.6,1.38-1.41.14-.73.64-1.24,1.38-1.34,2.47-.34,4.94-.57,7.27.63.62.32,1.25.7,1.74,1.18,1.6,1.55,3.55,2.33,5.66,2.79,2.18.48,4.36.94,6.61.62.51-.07,1.02-.24,1.48-.45.5-.22.61-.64.29-1.12-.09-.13-.18-.26-.26-.4-.48-.79-.27-1.59.62-1.74,1.19-.2,2.44-.33,3.64-.22,2.76.26,5.5.74,8.06,1.87,1.28.56,2.46,1.34,3.69,2.02.56.31,1.08.77,1.68.89,1.73.35,2.79,1.59,3.96,2.72.11.11.25.19.38.28-.05.08-.09.16-.14.24-.55-.29-1.17-.49-1.65-.87-3.28-2.66-7.13-3.81-11.23-4.31-1.51-.18-3.03-.31-4.55-.39-.53-.03-1.09.1-1.6.26-.78.24-.93.71-.51,1.41.18.31.41.6.6.91.39.67.31,1.24-.4,1.52-.81.31-1.7.56-2.55.56-3,0-5.92-.49-8.71-1.66-1.34-.56-2.54-1.37-3.47-2.47-1.51-1.79-3.54-2.4-5.7-2.71-1.55-.22-3.12-.23-4.66.24-.8.24-1.3.77-1.37,1.6-.08.95-.62,1.44-1.48,1.62-1.6.32-3.22.32-4.8-.08-1.36-.34-2.2-1.22-2.34-2.67-.06-.64-.45-1.02-1.03-1.23-.23-.08-.47-.14-.78-.23.21-.44.37-.86.59-1.24ZM64.34,54.67c-2.37-.8-4.81-1.37-7.35-1.25-.78.04-1.59.17-2.33.43-1.09.39-1.29,1.31-.58,2.22.21.27.47.49.7.74.98,1.07.77,2.13-.63,2.54-.92.28-1.91.41-2.88.42-3.91.04-7.56-1.02-10.9-2.98-1.86-1.1-3.53-2.53-5.3-3.8-1.69-1.22-3.5-2.19-5.54-2.67-1.82-.42-3.62-.27-5.37.32-1.17.39-1.46.86-1.46,2.08,0,1.45-.3,1.86-1.72,2.11-2.29.42-4.48.05-6.57-.93-1.17-.55-1.84-1.55-2.05-2.81-.26-1.53-.97-2.57-2.7-2.79.19-.72.35-1.36.52-1.98,1.33-.05,2.36.81,2.4,2.12.03,1.22.72,1.92,1.63,2.49,1.33.82,2.81.99,4.33.87.63-.05,1.27-.14,1.87-.31.81-.22,1.06-.61,1.1-1.43.06-1.4.34-1.76,1.69-2.17,2.93-.9,5.73-.4,8.38.93,1.18.59,2.35,1.35,3.25,2.3,1.62,1.71,3.52,2.82,5.76,3.45,2.42.68,4.84,1.27,7.37,1.11.85-.05,1.72-.23,2.51-.52,1.07-.4,1.21-1.19.5-2.1-.24-.3-.51-.59-.7-.92-.35-.61-.21-1.24.45-1.46.85-.28,1.75-.48,2.64-.52,3.4-.16,6.6.77,9.75,1.94,2.27.84,4.41,1.93,6.28,3.49.55.46,1.03,1.01,1.62,1.6-2.35-.88-4.5-1.77-6.71-2.51Z"/>
+    </g>
+  </g></svg></span>
+        <span class="award-festival">Wave Festival</span><span class="award-category">Design</span>
+        <span class="award-medal m-gold">Gold · Silver · Bronze</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Credits -->
+  <div class="credits-section">
+    <span class="section-label reveal" data-pt="Créditos" data-en="Credits">Créditos</span>
+    <table class="credits-table reveal d1">
+      <tr>
+        <td class="td-role" data-pt="Cliente" data-en="Client">Cliente</td>
+        <td class="td-name">Diageo</td>
+      </tr>
+      <tr>
+        <td class="td-role" data-pt="Produto" data-en="Product">Produto</td>
+        <td class="td-name">Smirnoff</td>
+      </tr>
+      <tr>
+        <td class="td-role" data-pt="Agência" data-en="Advertising Agency">Agência</td>
+        <td class="td-name">J.Walter Thompson</td>
+      </tr>
+      <tr>
+        <td class="td-role">Chief Creative Officer</td>
+        <td class="td-name">Mario D'andrea</td>
+      </tr>
+      <tr>
+        <td class="td-role" data-pt="Direção de Criação" data-en="Creative Director">Direção de Criação</td>
+        <td class="td-name">Roberto Fernandez</td>
+      </tr>
+      <tr>
+        <td class="td-role" data-pt="Direção de Arte &amp; Design" data-en="Art Director / Graphic Design">Direção de Arte &amp; Design</td>
+        <td class="td-name"><strong>Ricardo Kawano</strong>, Christian Faria, Viniscius Montana</td>
+      </tr>
+      <tr>
+        <td class="td-role" data-pt="Redação" data-en="Copywriter">Redação</td>
+        <td class="td-name">Marlon Zanatti</td>
+      </tr>
+      <tr>
+        <td class="td-role" data-pt="Ilustração" data-en="Illustration">Ilustração</td>
+        <td class="td-name">Julio Freitas, Paulo Cesar, Marcos Oliveira</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Project nav -->
+  <div class="proj-nav reveal">
+    <a href="gelato.html" class="proj-nav-link">
+      <span class="proj-nav-dir" data-pt="← Anterior" data-en="← Previous">← Anterior</span>
+      <span class="proj-nav-title">Nestlé Gelato</span>
+    </a>
+    <a href="pascoa.html" class="proj-nav-link right">
+      <span class="proj-nav-dir" data-pt="Próximo →" data-en="Next →">Próximo →</span>
+      <span class="proj-nav-title">Páscoa Nestlé</span>
+    </a>
+  </div>
+
+</div><!-- /body-wrap -->
+
+<footer>
+  <div class="footer-inner">
+    <p class="footer-copy">© 2025 Ricardo Kawano</p>
+    <a href="portfolio-v2.html" class="footer-link">ricardokawano.com</a>
+  </div>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lbClose">✕</button>
+  <button class="lightbox-btn lightbox-prev" id="lbPrev">
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div id="lbContent" style="display:flex;align-items:center;justify-content:center;width:90vw;height:86vh;"></div>
+  <button class="lightbox-btn lightbox-next" id="lbNext">
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <span class="lightbox-counter" id="lbCounter"></span>
+</div>
+
+<script>
+  /* Nav scroll */
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
+
+  /* Hero load */
+  setTimeout(() => document.getElementById('heroImg').classList.add('loaded'), 80);
+
+  /* Intersection Observer */
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  /* Lightbox */
+  const items = [];
+  document.querySelectorAll('.gallery-item[data-src]').forEach(el => {
+    items.push({ src: el.dataset.src, caption: el.dataset.caption || '' });
+    el.addEventListener('click', () => openLightbox(items.findIndex(it => it.src === el.dataset.src)));
+  });
+
+  let current = 0;
+  const lb = document.getElementById('lightbox');
+  const lbClose = document.getElementById('lbClose');
+  const lbPrev = document.getElementById('lbPrev');
+  const lbNext = document.getElementById('lbNext');
+  const lbContent = document.getElementById('lbContent');
+  const lbCounter = document.getElementById('lbCounter');
+
+  function openLightbox(idx) {
+    current = ((idx % items.length) + items.length) % items.length;
+    renderLightbox();
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+    lbContent.innerHTML = '';
+  }
+  function renderLightbox() {
+    const item = items[current];
+    lbContent.innerHTML = '';
+    if (/\.gif/i.test(item.src)) {
+      const div = document.createElement('div');
+      div.className = 'lightbox-frame';
+      div.style.cssText = 'width:80vw;height:75vh;background-image:url(' + item.src + ');background-size:contain;background-repeat:no-repeat;background-position:center;';
+      lbContent.appendChild(div);
+    } else {
+      const img = document.createElement('img');
+      img.className = 'lightbox-img';
+      img.src = item.src; img.alt = item.caption;
+      lbContent.appendChild(img);
+    }
+    lbCounter.textContent = (current + 1) + ' / ' + items.length;
+    lbPrev.style.display = items.length > 1 ? 'flex' : 'none';
+    lbNext.style.display = items.length > 1 ? 'flex' : 'none';
+  }
+
+  /* Language toggle */
+  function applyLang(lang) {
+    document.querySelectorAll('[data-pt][data-en]').forEach(el => {
+      el.innerHTML = el.dataset[lang];
+    });
+    const btn = document.getElementById('langToggle');
+    if (btn) btn.textContent = lang === 'pt' ? 'EN' : 'PT';
+    localStorage.setItem('rk-lang', lang);
+  }
+  (function() {
+    const saved = localStorage.getItem('rk-lang') || 'pt';
+    applyLang(saved);
+    document.getElementById('langToggle').addEventListener('click', function() {
+      const current = localStorage.getItem('rk-lang') || 'pt';
+      applyLang(current === 'pt' ? 'en' : 'pt');
+    });
+  })();
+
+  lbClose.addEventListener('click', closeLightbox);
+  lbPrev.addEventListener('click', () => { current = (current - 1 + items.length) % items.length; renderLightbox(); });
+  lbNext.addEventListener('click', () => { current = (current + 1) % items.length; renderLightbox(); });
+  lb.addEventListener('click', e => { if (e.target === lb || e.target === lbContent) closeLightbox(); });
+  document.addEventListener('keydown', e => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft')  { current = (current - 1 + items.length) % items.length; renderLightbox(); }
+    if (e.key === 'ArrowRight') { current = (current + 1) % items.length; renderLightbox(); }
+  });
+</script>
+</body>
+</html>

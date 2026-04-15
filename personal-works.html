@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Personal Works — Ricardo Kawano</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #FAFAF8;
+      --ink:     #111110;
+      --gold:    #C8A45A;
+      --muted:   #8A8A84;
+      --rule:    #E4E4DF;
+      --serif:   Georgia, "Times New Roman", serif;
+      --sans:    -apple-system, system-ui, sans-serif;
+      --nav-h:   56px;
+      --max:     1320px;
+      --gutter:  clamp(24px, 5vw, 80px);
+      --ease:    cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --t:       0.4s;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:    #111110;
+        --ink:   #F0EFE8;
+        --rule:  #2A2A26;
+        --muted: #6A6A64;
+      }
+    }
+
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ──────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      z-index: 9999;
+      transition: background var(--t), border-color var(--t);
+    }
+    nav.scrolled {
+      background: rgba(250,250,248,0.92);
+      backdrop-filter: saturate(180%) blur(24px);
+      -webkit-backdrop-filter: saturate(180%) blur(24px);
+      border-bottom: 1px solid var(--rule);
+    }
+    @media (prefers-color-scheme: dark) {
+      nav.scrolled { background: rgba(17,17,16,0.92); }
+    }
+    .nav-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 20px;
+      font-weight: 400;
+      color: #fff;
+      letter-spacing: -0.01em;
+      text-decoration: none;
+      transition: color var(--t);
+    }
+    nav.scrolled .nav-logo { color: var(--ink); }
+
+    .nav-back {
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color var(--t);
+    }
+    .nav-back:hover { color: #fff; }
+    nav.scrolled .nav-back { color: var(--muted); }
+    nav.scrolled .nav-back:hover { color: var(--ink); }
+    .nav-back svg { transition: transform var(--t) var(--ease); }
+    .nav-back:hover svg { transform: translateX(-3px); }
+
+    .lang-toggle {
+      background: none; border: 1px solid rgba(255,255,255,0.35);
+      color: rgba(255,255,255,0.7); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 5px 10px; border-radius: 2px; cursor: pointer;
+      transition: color var(--t), border-color var(--t), background var(--t);
+      margin-left: 16px;
+    }
+    .lang-toggle:hover { color: #fff; border-color: rgba(255,255,255,0.7); }
+    nav.scrolled .lang-toggle { color: var(--muted); border-color: var(--rule); }
+    nav.scrolled .lang-toggle:hover { color: var(--ink); border-color: var(--muted); }
+
+    /* ── HERO ──────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      height: 100vh;
+      min-height: 640px;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .hero-img {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center 40%;
+      transform: scale(1.04);
+      transition: transform 1.4s var(--ease);
+    }
+    .hero-img.loaded { transform: scale(1); }
+
+    .hero-gradient {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to right, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0.1) 100%),
+        linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 55%);
+    }
+
+    .hero-tint {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 50%, rgba(200,164,90,0.2) 0%, transparent 70%);
+      mix-blend-mode: screen;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+      padding-bottom: clamp(60px, 8vh, 100px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: end;
+      gap: 40px;
+    }
+
+    .hero-left {}
+
+    .hero-eyebrow {
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .hero-title {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(52px, 7.5vw, 108px);
+      line-height: 0.92;
+      letter-spacing: -0.03em;
+      color: #fff;
+      margin-bottom: 32px;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .hero-tag {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.65);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 5px 12px;
+      border-radius: 2px;
+    }
+
+    /* scroll indicator */
+    .hero-scroll {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.4);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      z-index: 3;
+      animation: bounce 2.4s ease-in-out infinite;
+    }
+    .hero-scroll svg { opacity: 0.5; }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ── BODY WRAPPER ──────────────────────────────────── */
+    .body-wrap {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+    }
+
+    /* ── OVERVIEW ──────────────────────────────────────── */
+    .overview {
+      padding: clamp(80px, 12vh, 140px) 0 0;
+      display: grid;
+      grid-template-columns: 38fr 62fr;
+      gap: clamp(40px, 6vw, 100px);
+      align-items: start;
+    }
+
+    .overview-left {}
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .pull-quote {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(22px, 2.8vw, 34px);
+      font-weight: 400;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+
+    .overview-right {}
+
+    .body-text {
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--muted);
+      max-width: 580px;
+    }
+    .body-text p + p { margin-top: 20px; }
+
+    /* ── SERIES SECTIONS ───────────────────────────────── */
+    .series-section {
+      padding-top: clamp(60px, 10vh, 100px);
+    }
+
+    .series-title {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(32px, 4.5vw, 56px);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 28px;
+      line-height: 1.05;
+    }
+
+    .series-rule {
+      width: 100%;
+      height: 1px;
+      background: var(--rule);
+      margin-bottom: clamp(32px, 5vh, 56px);
+    }
+
+    /* ── GALLERY ITEMS ─────────────────────────────────── */
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      border-radius: 3px;
+      cursor: zoom-in;
+      background: var(--rule);
+    }
+    .gallery-item .frame {
+      width: 100%;
+      background-size: cover;
+      background-position: center;
+      display: block;
+      transition: transform 0.5s var(--ease), filter 0.3s;
+    }
+
+    .gallery-item:hover .frame {
+      transform: scale(1.04);
+      filter: brightness(1.04);
+    }
+
+    /* hover caption */
+    .gallery-item::after {
+      content: attr(data-caption);
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 14px 16px;
+      background: linear-gradient(to top, rgba(0,0,0,0.65), transparent);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.8);
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+    }
+    .gallery-item:hover::after { opacity: 1; transform: translateY(0); }
+
+    /* zoom icon */
+    .gallery-item .zoom-icon {
+      position: absolute;
+      top: 12px; right: 12px;
+      width: 32px; height: 32px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0;
+      transform: scale(0.85);
+      transition: opacity 0.3s, transform 0.3s;
+      color: #fff;
+    }
+    .gallery-item:hover .zoom-icon { opacity: 1; transform: scale(1); }
+
+    /* ── LOVE GRID ─────────────────────────────────────── */
+    .love-grid-bottom {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    /* ── WANDERLUST GRID ───────────────────────────────── */
+    .wanderlust-top {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+    .wanderlust-bottom {
+      margin-top: 10px;
+    }
+
+    /* ── LIGHTHOUSE GRID ───────────────────────────────── */
+    .lighthouse-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+
+    /* ── PROJ NAV ──────────────────────────────────────── */
+    .proj-nav {
+      border-top: 1px solid var(--rule);
+      margin-top: clamp(80px, 12vh, 120px);
+      padding: clamp(48px, 8vh, 80px) 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+    }
+    .proj-nav-link {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .proj-nav-link.right { text-align: right; align-items: flex-end; }
+    .proj-nav-dir {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .proj-nav-title {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(20px, 2.5vw, 28px);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      transition: color var(--t);
+    }
+    .proj-nav-link:hover .proj-nav-title { color: var(--gold); }
+
+    /* ── FOOTER ────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--rule);
+      padding: 32px 0;
+    }
+    .footer-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-copy {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.01em;
+    }
+    .footer-link {
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color var(--t);
+    }
+    .footer-link:hover { color: var(--ink); }
+
+    /* ── LIGHTBOX ──────────────────────────────────────── */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: rgba(10, 10, 9, 0.96);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .lightbox.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .lightbox-img {
+      max-width: 90vw;
+      max-height: 86vh;
+      object-fit: contain;
+      border-radius: 3px;
+      transform: scale(0.95);
+      transition: transform 0.3s var(--ease);
+      display: block;
+    }
+    .lightbox.open .lightbox-img { transform: scale(1); }
+
+    .lightbox-close {
+      position: absolute;
+      top: 24px; right: 28px;
+      background: none; border: none;
+      color: rgba(255,255,255,0.55);
+      font-size: 28px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 8px;
+      transition: color 0.2s, transform 0.2s;
+    }
+    .lightbox-close:hover { color: #fff; transform: rotate(90deg); }
+
+    .lightbox-btn {
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.7);
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, color 0.2s;
+      font-size: 20px;
+    }
+    .lightbox-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+    .lightbox-prev { left: 24px; }
+    .lightbox-next { right: 24px; }
+
+    .lightbox-counter {
+      position: absolute;
+      bottom: 24px; left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+
+    /* ── REVEAL ────────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .d1 { transition-delay: 0.1s; }
+    .d2 { transition-delay: 0.2s; }
+    .d3 { transition-delay: 0.3s; }
+    .d4 { transition-delay: 0.4s; }
+
+    /* ── RESPONSIVE ────────────────────────────────────── */
+    @media (max-width: 860px) {
+      .hero-content { grid-template-columns: 1fr; }
+      .overview { grid-template-columns: 1fr; }
+      .wanderlust-top { grid-template-columns: 1fr 1fr; }
+      .lighthouse-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 560px) {
+      .wanderlust-top { grid-template-columns: 1fr; }
+      .lighthouse-grid { grid-template-columns: 1fr; }
+      .love-grid-bottom { grid-template-columns: 1fr; }
+      .lightbox-prev { left: 8px; }
+      .lightbox-next { right: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ──────────────────────────────────────────────── -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="portfolio-v2.html" class="nav-logo">RK</a>
+    <div style="display:flex;align-items:center;">
+      <a href="portfolio-v2.html#work" class="nav-back">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span data-pt="Todos os Trabalhos" data-en="All Work">All Work</span>
+      </a>
+      <button class="lang-toggle" id="langToggle">PT</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ──────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-img" id="heroImg"></div>
+  <div class="hero-gradient"></div>
+  <div class="hero-tint"></div>
+
+  <div class="hero-content">
+    <div class="hero-left">
+      <span class="hero-eyebrow">Ricardo Kawano — Experimental</span>
+      <h1 class="hero-title">Personal<br>Works</h1>
+      <div class="hero-tags">
+        <span class="hero-tag">Poster Design</span>
+        <span class="hero-tag">Experimental</span>
+        <span class="hero-tag">Personal</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M8 3v10M3 9l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Scroll
+  </div>
+</section>
+
+<!-- ── BODY ───────────────────────────────────────────────── -->
+<div class="body-wrap">
+
+  <!-- Overview -->
+  <div class="overview">
+    <div class="overview-left reveal">
+      <span class="section-label" data-pt="Visão Geral" data-en="Overview">Visão Geral</span>
+      <p class="pull-quote" data-pt="Trabalhos que existem por si mesmos — sem briefing, prazo ou cliente." data-en="Works that exist for their own sake — no brief, no deadline, no client.">
+        Trabalhos que existem por si mesmos — sem briefing, prazo ou cliente.
+      </p>
+    </div>
+    <div class="overview-right reveal d2">
+      <div class="body-text">
+        <p data-pt="Uma coleção de projetos pessoais desenvolvidos fora do universo comercial. São trabalhos que exploram tipografia, composição e narrativa visual de maneira livre — organizados em séries temáticas." data-en="A collection of personal projects developed outside the commercial world. These works freely explore typography, composition, and visual storytelling — organized into thematic series.">Uma coleção de projetos pessoais desenvolvidos fora do universo comercial. São trabalhos que exploram tipografia, composição e narrativa visual de maneira livre — organizados em séries temáticas.</p>
+        <p data-pt="Cada série nasce de uma ideia, emoção ou observação do mundo. São experimentos que alimentam e informam todo o trabalho de direção de arte e design." data-en="Each series is born from an idea, an emotion, or an observation of the world. These experiments feed and inform all the art direction and design work.">Cada série nasce de uma ideia, emoção ou observação do mundo. São experimentos que alimentam e informam todo o trabalho de direção de arte e design.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SERIES 1: LOVE ─────────────────────────────────── -->
+  <div class="series-section">
+    <div class="reveal">
+      <h2 class="series-title">Love</h2>
+      <div class="series-rule"></div>
+    </div>
+
+    <!-- Full-width first image (4/3) -->
+    <div class="reveal d1">
+      <div class="gallery-item"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/764-lovedetail1.png?v=1587164918"
+           data-caption="Love — I">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/764-lovedetail1.png?v=1587164918'); aspect-ratio:4/3;"></div>
+        <div class="zoom-icon">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2×2 grid below -->
+    <div class="love-grid-bottom reveal d2">
+      <div class="gallery-item"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/765-lovedetail2.png?v=1587164918"
+           data-caption="Love — II">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/765-lovedetail2.png?v=1587164918'); aspect-ratio:1;"></div>
+        <div class="zoom-icon">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="gallery-item"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/766-lovedetail3.png?v=1587164918"
+           data-caption="Love — III">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/766-lovedetail3.png?v=1587164918'); aspect-ratio:1;"></div>
+        <div class="zoom-icon">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="gallery-item"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/762-lovedetail4.png?v=1587164918"
+           data-caption="Love — IV">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/762-lovedetail4.png?v=1587164918'); aspect-ratio:1;"></div>
+        <div class="zoom-icon">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="gallery-item"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/761-lovedetail6.png?v=1587164918"
+           data-caption="Love — V">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/761-lovedetail6.png?v=1587164918'); aspect-ratio:1;"></div>
+        <div class="zoom-icon">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SERIES 2: WANDERLUST ───────────────────────────── -->
+  <div class="series-section">
+    <div class="reveal">
+      <h2 class="series-title">Wanderlust</h2>
+      <div class="series-rule"></div>
+    </div>
+
+    <!-- 3 squares in a row -->
+    <div class="wanderlust-top reveal d1">
+      <div class="gallery-item"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/797-wanderdetail1.png?v=1587164918"
+           data-caption="Wanderlust — I">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/797-wanderdetail1.png?v=1587164918'); aspect-ratio:1;"></div>
+        <div class="zoom-icon">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="gallery-item"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/800-wanderdetail3-1.png?v=1587164919"
+           data-caption="Wanderlust — II">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/800-wanderdetail3-1.png?v=1587164919'); aspect-ratio:1;"></div>
+        <div class="zoom-icon">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="gallery-item"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/799-wanderdetail3-2.png?v=1587164919"
+           data-caption="Wanderlust — III">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/799-wanderdetail3-2.png?v=1587164919'); aspect-ratio:1;"></div>
+        <div class="zoom-icon">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panorama full-width -->
+    <div class="wanderlust-bottom reveal d2">
+      <div class="gallery-item"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/767-wanderlustposterapply.png?v=1587164918"
+           data-caption="Wanderlust — Panorama">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/767-wanderlustposterapply.png?v=1587164918'); aspect-ratio:21/9;"></div>
+        <div class="zoom-icon">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SERIES 3: LIGHTHOUSE ───────────────────────────── -->
+  <div class="series-section">
+    <div class="reveal">
+      <h2 class="series-title">Lighthouse</h2>
+      <div class="series-rule"></div>
+    </div>
+
+    <!-- Poster apply — full width -->
+    <div class="wanderlust-bottom reveal d1">
+      <div class="gallery-item"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/829-lighthouseposterapply-1.jpg?v=1587164919"
+           data-caption="Lighthouse — Poster Apply">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/829-lighthouseposterapply-1.jpg?v=1587164919'); aspect-ratio:16/9;"></div>
+        <div class="zoom-icon">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 square details -->
+    <div class="lighthouse-grid reveal d2" style="margin-top:10px;">
+      <div class="gallery-item"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/832-lighthousedetail.png?v=1587164919"
+           data-caption="Lighthouse — Detalhe I">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/832-lighthousedetail.png?v=1587164919'); aspect-ratio:1;"></div>
+        <div class="zoom-icon">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="gallery-item"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/833-lighthousedetail2.png?v=1587164919"
+           data-caption="Lighthouse — Detalhe II">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/833-lighthousedetail2.png?v=1587164919'); aspect-ratio:1;"></div>
+        <div class="zoom-icon">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="gallery-item"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/834-lighthousedetail3.png?v=1587164919"
+           data-caption="Lighthouse — Detalhe III">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/834-lighthousedetail3.png?v=1587164919'); aspect-ratio:1;"></div>
+        <div class="zoom-icon">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 portrait details -->
+    <div class="lighthouse-grid reveal d3" style="margin-top:10px;">
+      <div class="gallery-item"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/837-lighthousedetail01.png?v=1587164919"
+           data-caption="Lighthouse — I">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/837-lighthousedetail01.png?v=1587164919'); aspect-ratio:2/3;"></div>
+        <div class="zoom-icon">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="gallery-item"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/836-lighthousedetail02.png?v=1587164919"
+           data-caption="Lighthouse — II">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/836-lighthousedetail02.png?v=1587164919'); aspect-ratio:2/3;"></div>
+        <div class="zoom-icon">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="gallery-item"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/835-lighthousedetail03.png?v=1587164919"
+           data-caption="Lighthouse — III">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/835-lighthousedetail03.png?v=1587164919'); aspect-ratio:2/3;"></div>
+        <div class="zoom-icon">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Project nav -->
+  <div class="proj-nav reveal">
+    <a href="hotel-jatiuca.html" class="proj-nav-link">
+      <span class="proj-nav-dir" data-pt="← Anterior" data-en="← Previous">← Anterior</span>
+      <span class="proj-nav-title">Jatiúca Hotéis &amp; Resorts</span>
+    </a>
+    <a href="portfolio-v2.html#work" class="proj-nav-link right">
+      <span class="proj-nav-dir" data-pt="↑ Ver todos" data-en="↑ All Work">↑ Ver todos</span>
+      <span class="proj-nav-title" data-pt="Todos os Trabalhos" data-en="All Work">Todos os Trabalhos</span>
+    </a>
+  </div>
+
+</div><!-- /body-wrap -->
+
+<footer>
+  <div class="footer-inner">
+    <p class="footer-copy">© 2024 Ricardo Kawano. Todos os direitos reservados.</p>
+    <a href="portfolio-v2.html" class="footer-link">ricardokawano.com</a>
+  </div>
+</footer>
+
+<!-- ── LIGHTBOX ──────────────────────────────────────────── -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
+  <button class="lightbox-close" id="lbClose" aria-label="Fechar">&#x2715;</button>
+  <button class="lightbox-btn lightbox-prev" id="lbPrev" aria-label="Anterior">
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div id="lbContent" style="display:flex;align-items:center;justify-content:center;width:90vw;height:86vh;"></div>
+  <button class="lightbox-btn lightbox-next" id="lbNext" aria-label="Proximo">
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <span class="lightbox-counter" id="lbCounter"></span>
+</div>
+
+<script>
+  /* ── Nav scroll ── */
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
+
+  /* ── Hero image load animation ── */
+  const heroImg = document.getElementById('heroImg');
+  const HERO_SRC = 'https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/760-loveposterapply.png?v=1587164918';
+  heroImg.style.backgroundImage = "url('" + HERO_SRC + "')";
+  const heroPreload = new Image();
+  heroPreload.onload = () => heroImg.classList.add('loaded');
+  heroPreload.src = HERO_SRC;
+  setTimeout(() => heroImg.classList.add('loaded'), 100);
+
+  /* ── Intersection Observer ── */
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  /* ── Lightbox ── */
+  const items = [];
+
+  document.querySelectorAll('.gallery-item[data-src]').forEach(el => {
+    const idx = items.length;
+    items.push({ src: el.dataset.src, caption: el.dataset.caption || '' });
+    el.addEventListener('click', () => openLightbox(idx));
+  });
+
+  let current = 0;
+  const lb        = document.getElementById('lightbox');
+  const lbClose   = document.getElementById('lbClose');
+  const lbPrev    = document.getElementById('lbPrev');
+  const lbNext    = document.getElementById('lbNext');
+  const lbContent = document.getElementById('lbContent');
+  const lbCounter = document.getElementById('lbCounter');
+
+  function openLightbox(idx) {
+    current = ((idx % items.length) + items.length) % items.length;
+    renderLightbox();
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+    lbContent.innerHTML = '';
+  }
+
+  function renderLightbox() {
+    const item = items[current];
+    lbContent.innerHTML = '';
+    const image = document.createElement('img');
+    image.className = 'lightbox-img';
+    image.src = item.src;
+    image.alt = item.caption;
+    lbContent.appendChild(image);
+    lbCounter.textContent = (current + 1) + ' / ' + items.length;
+    lbPrev.style.display = items.length > 1 ? 'flex' : 'none';
+    lbNext.style.display = items.length > 1 ? 'flex' : 'none';
+  }
+
+  /* Language toggle */
+  function applyLang(lang) {
+    document.querySelectorAll('[data-pt][data-en]').forEach(el => {
+      el.innerHTML = el.dataset[lang];
+    });
+    const btn = document.getElementById('langToggle');
+    if (btn) btn.textContent = lang === 'pt' ? 'EN' : 'PT';
+    localStorage.setItem('rk-lang', lang);
+  }
+  (function() {
+    const saved = localStorage.getItem('rk-lang') || 'pt';
+    applyLang(saved);
+    document.getElementById('langToggle').addEventListener('click', function() {
+      const current = localStorage.getItem('rk-lang') || 'pt';
+      applyLang(current === 'pt' ? 'en' : 'pt');
+    });
+  })();
+
+  lbClose.addEventListener('click', closeLightbox);
+  lbPrev.addEventListener('click', () => { current = (current - 1 + items.length) % items.length; renderLightbox(); });
+  lbNext.addEventListener('click', () => { current = (current + 1) % items.length; renderLightbox(); });
+  lb.addEventListener('click', e => { if (e.target === lb || e.target === lbContent) closeLightbox(); });
+
+  document.addEventListener('keydown', e => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape')      closeLightbox();
+    if (e.key === 'ArrowLeft')  { current = (current - 1 + items.length) % items.length; renderLightbox(); }
+    if (e.key === 'ArrowRight') { current = (current + 1) % items.length; renderLightbox(); }
+  });
+</script>
+</body>
+</html>

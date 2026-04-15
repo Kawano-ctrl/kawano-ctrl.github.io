@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Páscoa — Ricardo Kawano</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #FAFAF8;
+      --ink:     #111110;
+      --gold:    #C8A45A;
+      --muted:   #8A8A84;
+      --rule:    #E4E4DF;
+      --serif:   Georgia, "Times New Roman", serif;
+      --sans:    -apple-system, system-ui, sans-serif;
+      --nav-h:   56px;
+      --max:     1320px;
+      --gutter:  clamp(24px, 5vw, 80px);
+      --ease:    cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --t:       0.4s;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:    #111110;
+        --ink:   #F0EFE8;
+        --rule:  #2A2A26;
+        --muted: #6A6A64;
+      }
+    }
+
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ──────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      z-index: 9999;
+      transition: background var(--t), border-color var(--t);
+    }
+    nav.scrolled {
+      background: rgba(250,250,248,0.92);
+      backdrop-filter: saturate(180%) blur(24px);
+      -webkit-backdrop-filter: saturate(180%) blur(24px);
+      border-bottom: 1px solid var(--rule);
+    }
+    @media (prefers-color-scheme: dark) {
+      nav.scrolled { background: rgba(17,17,16,0.92); }
+    }
+    .nav-inner {
+      max-width: var(--max); margin: 0 auto;
+      padding: 0 var(--gutter); height: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: var(--serif); font-style: italic;
+      font-size: 20px; font-weight: 400; color: #fff;
+      letter-spacing: -0.01em; text-decoration: none;
+      transition: color var(--t);
+    }
+    nav.scrolled .nav-logo { color: var(--ink); }
+    .nav-back {
+      font-family: var(--sans); font-size: 12px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.7); text-decoration: none;
+      display: flex; align-items: center; gap: 8px;
+      transition: color var(--t);
+    }
+    .nav-back:hover { color: #fff; }
+    nav.scrolled .nav-back { color: var(--muted); }
+    nav.scrolled .nav-back:hover { color: var(--ink); }
+    .nav-back svg { transition: transform var(--t) var(--ease); }
+    .nav-back:hover svg { transform: translateX(-3px); }
+
+    .lang-toggle {
+      background: none; border: 1px solid rgba(255,255,255,0.35);
+      color: rgba(255,255,255,0.7); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 5px 10px; border-radius: 2px; cursor: pointer;
+      transition: color var(--t), border-color var(--t), background var(--t);
+      margin-left: 16px;
+    }
+    .lang-toggle:hover { color: #fff; border-color: rgba(255,255,255,0.7); }
+    nav.scrolled .lang-toggle { color: var(--muted); border-color: var(--rule); }
+    nav.scrolled .lang-toggle:hover { color: var(--ink); border-color: var(--muted); }
+
+    /* ── HERO ──────────────────────────────────────────── */
+    .hero {
+      position: relative; height: 100vh; min-height: 640px;
+      overflow: hidden; display: flex; align-items: flex-end;
+    }
+    .hero-img {
+      position: absolute; inset: 0;
+      background-image: url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/326-detalhenestle.png?v=1587164914');
+      background-size: cover; background-position: center 35%;
+      transform: scale(1.04);
+      transition: transform 1.4s var(--ease);
+    }
+    .hero-img.loaded { transform: scale(1); }
+    .hero-gradient {
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(to right, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 45%, rgba(0,0,0,0.08) 100%),
+        linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 55%);
+    }
+    .hero-tint {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 70% 35%, rgba(90,30,130,0.38) 0%, transparent 65%);
+      mix-blend-mode: multiply;
+    }
+    .hero-content {
+      position: relative; z-index: 2; width: 100%;
+      max-width: var(--max); margin: 0 auto;
+      padding: 0 var(--gutter);
+      padding-bottom: clamp(60px, 8vh, 100px);
+    }
+    .hero-eyebrow {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 20px; display: block;
+    }
+    .hero-title {
+      font-family: var(--serif); font-style: italic; font-weight: 400;
+      font-size: clamp(48px, 7vw, 100px);
+      line-height: 0.93; letter-spacing: -0.03em;
+      color: #fff; margin-bottom: 32px;
+    }
+    .hero-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .hero-tag {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: rgba(255,255,255,0.65);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 5px 12px; border-radius: 2px;
+    }
+    .hero-scroll {
+      position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      color: rgba(255,255,255,0.4); font-size: 10px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase; z-index: 3;
+      animation: bounce 2.4s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ── BODY WRAPPER ──────────────────────────────────── */
+    .body-wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
+
+    /* ── OVERVIEW ──────────────────────────────────────── */
+    .overview {
+      padding: clamp(80px, 12vh, 140px) 0 0;
+      display: grid; grid-template-columns: 38fr 62fr;
+      gap: clamp(40px, 6vw, 100px); align-items: start;
+    }
+    .section-label {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 20px; display: block;
+    }
+    .pull-quote {
+      font-family: var(--serif); font-style: italic;
+      font-size: clamp(21px, 2.6vw, 32px); font-weight: 400;
+      line-height: 1.35; letter-spacing: -0.02em; color: var(--ink);
+    }
+    .body-text {
+      font-size: 17px; line-height: 1.75; color: var(--muted); max-width: 580px;
+    }
+    .body-text p + p { margin-top: 20px; }
+
+    /* ── GALLERY ───────────────────────────────────────── */
+    .gallery-section { padding: clamp(60px, 10vh, 120px) 0 0; }
+    .gallery-label-row {
+      display: flex; align-items: center;
+      justify-content: space-between; margin-bottom: 28px;
+    }
+    .gallery-count {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+    }
+    .gallery-grid { display: grid; gap: 10px; }
+    .g-2 { grid-template-columns: 1fr 1fr; }
+    .g-3 { grid-template-columns: 1fr 1fr 1fr; margin-top: 10px; }
+    .gallery-item {
+      position: relative; overflow: hidden;
+      border-radius: 3px; cursor: zoom-in; background: var(--rule);
+    }
+    .gallery-item .frame {
+      width: 100%; aspect-ratio: 4/3;
+      background-size: cover; background-position: center; display: block;
+      transition: transform 0.5s var(--ease), filter 0.3s;
+    }
+    .gallery-item.sq .frame { aspect-ratio: 1; }
+    .gallery-item.wide .frame { aspect-ratio: 16/7; }
+    .gallery-item:hover .frame { transform: scale(1.04); filter: brightness(1.04); }
+    .gallery-item::after {
+      content: attr(data-caption);
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 14px 16px;
+      background: linear-gradient(to top, rgba(0,0,0,0.65), transparent);
+      font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; color: rgba(255,255,255,0.8);
+      opacity: 0; transform: translateY(4px);
+      transition: opacity 0.3s, transform 0.3s; pointer-events: none;
+    }
+    .gallery-item:hover::after { opacity: 1; transform: translateY(0); }
+    .gallery-item .zoom-icon {
+      position: absolute; top: 12px; right: 12px;
+      width: 32px; height: 32px;
+      background: rgba(255,255,255,0.15); backdrop-filter: blur(8px);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      opacity: 0; transform: scale(0.85);
+      transition: opacity 0.3s, transform 0.3s; color: #fff;
+    }
+    .gallery-item:hover .zoom-icon { opacity: 1; transform: scale(1); }
+
+    /* ── CAMPAIGN CALLOUT ──────────────────────────────── */
+    .callout {
+      margin-top: clamp(60px, 10vh, 120px);
+      background: var(--ink); border-radius: 6px;
+      padding: clamp(40px, 6vw, 72px);
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: clamp(32px, 5vw, 80px); align-items: center;
+    }
+    .callout-left {}
+    .callout-number {
+      font-family: var(--serif); font-style: italic;
+      font-size: clamp(56px, 8vw, 110px); font-weight: 400;
+      line-height: 1; letter-spacing: -0.04em; color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .callout-sub {
+      font-size: 13px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(250,250,248,0.35);
+    }
+    .callout-text {
+      font-family: var(--serif); font-style: italic;
+      font-size: clamp(17px, 2vw, 24px);
+      line-height: 1.5; letter-spacing: -0.01em;
+      color: rgba(250,250,248,0.82);
+    }
+    .callout-text em { color: var(--gold); font-style: normal; }
+
+    /* ── VIDEOS ────────────────────────────────────────── */
+    .videos-section { padding: clamp(80px, 12vh, 140px) 0 0; }
+    .video-single {
+      margin-top: 28px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .video-frame {
+      position: relative; width: 100%; aspect-ratio: 16/9;
+      border-radius: 4px; overflow: hidden; background: #0a0a09;
+    }
+    .video-frame iframe {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; border: 0;
+    }
+
+    /* ── CREDITS ───────────────────────────────────────── */
+    .credits-section { padding: 40px 0 0; }
+    .credits-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+    .credits-table tr { border-bottom: 1px solid var(--rule); }
+    .credits-table tr:first-child { border-top: 1px solid var(--rule); }
+    .credits-table td { padding: 8px 0; vertical-align: top; }
+    .td-role {
+      width: 36%; font-size: 10px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); padding-right: 32px;
+    }
+    .td-name { font-size: 13px; font-weight: 400; color: var(--ink); line-height: 1.4; }
+
+    /* ── PROJ NAV ──────────────────────────────────────── */
+    .proj-nav {
+      border-top: 1px solid var(--rule);
+      padding: clamp(48px, 8vh, 80px) 0;
+      display: flex; justify-content: space-between;
+      align-items: center; gap: 24px;
+    }
+    .proj-nav-link { display: flex; flex-direction: column; gap: 8px; text-decoration: none; }
+    .proj-nav-link.right { text-align: right; align-items: flex-end; }
+    .proj-nav-dir {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+    }
+    .proj-nav-title {
+      font-family: var(--serif); font-style: italic;
+      font-size: clamp(20px, 2.5vw, 28px); font-weight: 400;
+      letter-spacing: -0.02em; color: var(--ink); transition: color var(--t);
+    }
+    .proj-nav-link:hover .proj-nav-title { color: var(--gold); }
+
+    /* ── FOOTER ────────────────────────────────────────── */
+    footer { border-top: 1px solid var(--rule); padding: 32px 0; }
+    .footer-inner {
+      max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-copy { font-size: 12px; color: var(--muted); }
+    .footer-link { font-size: 12px; color: var(--muted); text-decoration: none; transition: color var(--t); }
+    .footer-link:hover { color: var(--ink); }
+
+    /* ── LIGHTBOX ──────────────────────────────────────── */
+    .lightbox {
+      position: fixed; inset: 0; z-index: 99999;
+      background: rgba(10,10,9,0.96);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    .lightbox.open { opacity: 1; pointer-events: all; }
+    .lightbox-img {
+      max-width: 90vw; max-height: 86vh; object-fit: contain;
+      border-radius: 3px; transform: scale(0.95);
+      transition: transform 0.3s var(--ease); display: block;
+    }
+    .lightbox-frame {
+      max-width: 90vw; max-height: 86vh;
+      background-size: contain; background-repeat: no-repeat;
+      background-position: center; border-radius: 3px;
+      transform: scale(0.95); transition: transform 0.3s var(--ease);
+    }
+    .lightbox.open .lightbox-img,
+    .lightbox.open .lightbox-frame { transform: scale(1); }
+    .lightbox-close {
+      position: absolute; top: 24px; right: 28px;
+      background: none; border: none; color: rgba(255,255,255,0.55);
+      font-size: 28px; cursor: pointer; line-height: 1; padding: 8px;
+      transition: color 0.2s, transform 0.2s;
+    }
+    .lightbox-close:hover { color: #fff; transform: rotate(90deg); }
+    .lightbox-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.7); width: 44px; height: 44px;
+      border-radius: 50%; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, color 0.2s; font-size: 20px;
+    }
+    .lightbox-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+    .lightbox-prev { left: 24px; }
+    .lightbox-next { right: 24px; }
+    .lightbox-counter {
+      position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+      font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: rgba(255,255,255,0.35);
+    }
+
+    /* ── REVEAL ────────────────────────────────────────── */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .d1 { transition-delay: 0.1s; } .d2 { transition-delay: 0.2s; }
+    .d3 { transition-delay: 0.3s; } .d4 { transition-delay: 0.4s; }
+
+    /* ── RESPONSIVE ────────────────────────────────────── */
+    @media (max-width: 860px) {
+      .overview { grid-template-columns: 1fr; }
+      .callout { grid-template-columns: 1fr; gap: 24px; }
+    }
+    @media (max-width: 640px) {
+      .g-2, .g-3 { grid-template-columns: 1fr; }
+      .lightbox-prev { left: 8px; }
+      .lightbox-next { right: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="portfolio-v2.html" class="nav-logo">RK</a>
+    <div style="display:flex;align-items:center;">
+      <a href="portfolio-v2.html#work" class="nav-back">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span data-pt="Todos os Trabalhos" data-en="All Work">All Work</span>
+      </a>
+      <button class="lang-toggle" id="langToggle">PT</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-img" id="heroImg"></div>
+  <div class="hero-gradient"></div>
+  <div class="hero-tint"></div>
+  <div class="hero-content">
+    <span class="hero-eyebrow">Nestlé · JWT</span>
+    <h1 class="hero-title">Páscoa<br>Nestlé &amp; Garoto</h1>
+    <div class="hero-tags">
+      <span class="hero-tag">Direção de Arte</span>
+      <span class="hero-tag">Campanha</span>
+      <span class="hero-tag">Easter</span>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M8 3v10M3 9l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Scroll
+  </div>
+</section>
+
+<!-- BODY -->
+<div class="body-wrap">
+
+  <!-- Overview -->
+  <div class="overview">
+    <div class="overview-left reveal">
+      <span class="section-label" data-pt="Visão Geral" data-en="Overview">Visão Geral</span>
+      <p class="pull-quote" data-pt="&quot;A campanha de Páscoa que uniu Nestlé e Garoto em uma só linguagem visual — dois mundos, um só chocolate.&quot;" data-en="&quot;The Easter campaign that united Nestlé and Garoto under one visual language — two worlds, one chocolate.&quot;">
+        "A campanha de Páscoa que uniu Nestlé e Garoto em uma só linguagem visual — dois mundos, um só chocolate."
+      </p>
+    </div>
+    <div class="overview-right reveal d2">
+      <div class="body-text">
+        <p data-pt="O projeto de Páscoa para a Nestlé foi um dos mais complexos em termos de gestão criativa: a campanha precisava comunicar tanto a linha premium Nestlé quanto a linha popular Garoto, mantendo cada marca com sua própria identidade enquanto dialogavam no mesmo ecossistema visual." data-en="The Easter project for Nestlé was one of the most complex in terms of creative management: the campaign needed to communicate both the premium Nestlé line and the popular Garoto line, keeping each brand's own identity while they coexisted within the same visual ecosystem.">O projeto de Páscoa para a Nestlé foi um dos mais complexos em termos de gestão criativa: a campanha precisava comunicar tanto a linha premium Nestlé quanto a linha popular Garoto, mantendo cada marca com sua própria identidade enquanto dialogavam no mesmo ecossistema visual.</p>
+        <p data-pt="A direção de arte desenvolveu um sistema visual flexível — tipografia, paleta de cores e tratamento fotográfico que se adaptavam ao DNA de cada marca, mas que coexistiam harmonicamente em peças de retail, digital e ponto de venda." data-en="The art direction developed a flexible visual system — typography, color palette, and photographic treatment that adapted to each brand's DNA while coexisting harmonically across retail, digital, and point-of-sale pieces.">A direção de arte desenvolveu um sistema visual flexível — tipografia, paleta de cores e tratamento fotográfico que se adaptavam ao DNA de cada marca, mas que coexistiam harmonicamente em peças de retail, digital e ponto de venda.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gallery -->
+  <div class="gallery-section">
+    <div class="gallery-label-row reveal">
+      <span class="section-label" style="margin-bottom:0" data-pt="Imagens" data-en="Images">Imagens</span>
+      <span class="gallery-count" data-pt="6 frames — clique para expandir" data-en="6 frames — click to expand">6 frames — clique para expandir</span>
+    </div>
+
+    <!-- Row 1: full-bleed 16/7 -->
+    <div class="gallery-grid reveal d1">
+      <div class="gallery-item wide"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/326-detalhenestle.png?v=1587164914"
+           data-caption="Nestlé — Detalhe">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/326-detalhenestle.png?v=1587164914');"></div>
+        <div class="zoom-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      </div>
+    </div>
+
+    <!-- Row 2: 2 cols 4/3 -->
+    <div class="gallery-grid g-2 reveal d2" style="margin-top:10px">
+      <div class="gallery-item"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/626-212687088.jpg?v=1587164916"
+           data-caption="Campanha — KV">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/626-212687088.jpg?v=1587164916');"></div>
+        <div class="zoom-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      </div>
+      <div class="gallery-item"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/627-kvpascua.png?v=1587164916"
+           data-caption="Key Visual Páscoa">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/627-kvpascua.png?v=1587164916');"></div>
+        <div class="zoom-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      </div>
+    </div>
+
+    <!-- Row 3: 3 cols square -->
+    <div class="gallery-grid g-3 reveal d3">
+      <div class="gallery-item sq"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/631-001boardpascoamobileptbr.jpg?v=1587164917"
+           data-caption="Mobile Board">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/631-001boardpascoamobileptbr.jpg?v=1587164917'); aspect-ratio:1;"></div>
+        <div class="zoom-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      </div>
+      <div class="gallery-item sq"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/631-detalhegaroto.png?v=1587164917"
+           data-caption="Garoto — Detalhe">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/631-detalhegaroto.png?v=1587164917'); aspect-ratio:1;"></div>
+        <div class="zoom-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      </div>
+      <div class="gallery-item sq"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/628-parreiranestle.png?v=1587164916"
+           data-caption="Parreira Nestlé">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/628-parreiranestle.png?v=1587164916'); aspect-ratio:1;"></div>
+        <div class="zoom-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      </div>
+    </div>
+
+    <!-- Row 4: 2 cols 4/3 -->
+    <div class="gallery-grid g-2 reveal d4" style="margin-top:10px">
+      <div class="gallery-item"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/632-parreiragaroto.png?v=1587164917"
+           data-caption="Parreira Garoto">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/632-parreiragaroto.png?v=1587164917');"></div>
+        <div class="zoom-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      </div>
+      <div class="gallery-item"
+           data-src="https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/631-site.png?v=1587164917"
+           data-caption="Site">
+        <div class="frame" style="background-image:url('https://static.ucraft.net/fs/ucraft/userFiles/kawano/images/631-site.png?v=1587164917');"></div>
+        <div class="zoom-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Callout -->
+  <div class="callout reveal">
+    <div class="callout-left">
+      <p class="callout-number">2</p>
+      <p class="callout-sub" data-pt="marcas em uma campanha" data-en="brands in one campaign">marcas em uma campanha</p>
+    </div>
+    <div class="callout-right">
+      <p class="callout-text" data-pt="Nestlé e Garoto — <em>dois chocolates, uma estratégia visual</em> para a Páscoa mais doce do ano." data-en="Nestlé and Garoto — <em>two chocolates, one visual strategy</em> for the sweetest Easter of the year.">
+        Nestlé e Garoto — <em>dois chocolates, uma estratégia visual</em> para a Páscoa mais doce do ano.
+      </p>
+    </div>
+  </div>
+
+  <!-- Videos -->
+  <div class="videos-section">
+    <div class="gallery-label-row reveal">
+      <span class="section-label" style="margin-bottom:0" data-pt="Filme" data-en="Film">Filme</span>
+      <span class="gallery-count" data-pt="1 vídeo" data-en="1 video">1 vídeo</span>
+    </div>
+    <div class="video-single reveal d1">
+      <div class="video-frame">
+        <iframe src="https://player.vimeo.com/video/212687088?color=C8A45A&title=0&byline=0&portrait=0&autopause=1"
+          allow="autoplay; fullscreen; picture-in-picture" allowfullscreen
+          title="Páscoa Nestlé &amp; Garoto"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Credits -->
+  <div class="credits-section">
+    <span class="section-label reveal" data-pt="Créditos" data-en="Credits">Créditos</span>
+    <table class="credits-table reveal d1">
+      <tr>
+        <td class="td-role" data-pt="Cliente" data-en="Client">Cliente</td>
+        <td class="td-name">Garoto / Nestlé</td>
+      </tr>
+      <tr>
+        <td class="td-role" data-pt="Produto" data-en="Product">Produto</td>
+        <td class="td-name">Páscoa</td>
+      </tr>
+      <tr>
+        <td class="td-role" data-pt="Agência" data-en="Advertising Agency">Agência</td>
+        <td class="td-name">J.Walter Thompson</td>
+      </tr>
+      <tr>
+        <td class="td-role">Chief Creative Officer</td>
+        <td class="td-name">Ricardo John</td>
+      </tr>
+      <tr>
+        <td class="td-role">Head of Art</td>
+        <td class="td-name">Fabio Simões</td>
+      </tr>
+      <tr>
+        <td class="td-role" data-pt="Direção de Criação" data-en="Creative Director">Direção de Criação</td>
+        <td class="td-name">Hernán Rebalderia</td>
+      </tr>
+      <tr>
+        <td class="td-role" data-pt="Direção de Arte &amp; Design" data-en="Art Director / Graphic Design">Direção de Arte &amp; Design</td>
+        <td class="td-name"><strong>Ricardo Kawano</strong>, Pedro Ricci</td>
+      </tr>
+      <tr>
+        <td class="td-role" data-pt="Redação" data-en="Copywriter">Redação</td>
+        <td class="td-name">Fernando Duarte, Julia Velo</td>
+      </tr>
+      <tr>
+        <td class="td-role" data-pt="Ilustração" data-en="Illustration">Ilustração</td>
+        <td class="td-name">TinCat Studios</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Project nav -->
+  <div class="proj-nav reveal">
+    <a href="smirnoff.html" class="proj-nav-link">
+      <span class="proj-nav-dir" data-pt="← Anterior" data-en="← Previous">← Anterior</span>
+      <span class="proj-nav-title">Smirnoff</span>
+    </a>
+    <a href="tramontina.html" class="proj-nav-link right">
+      <span class="proj-nav-dir" data-pt="Próximo →" data-en="Next →">Próximo →</span>
+      <span class="proj-nav-title">Tramontina</span>
+    </a>
+  </div>
+
+</div><!-- /body-wrap -->
+
+<footer>
+  <div class="footer-inner">
+    <p class="footer-copy">© 2025 Ricardo Kawano</p>
+    <a href="portfolio-v2.html" class="footer-link">ricardokawano.com</a>
+  </div>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lbClose">✕</button>
+  <button class="lightbox-btn lightbox-prev" id="lbPrev">
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div id="lbContent" style="display:flex;align-items:center;justify-content:center;width:90vw;height:86vh;"></div>
+  <button class="lightbox-btn lightbox-next" id="lbNext">
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <span class="lightbox-counter" id="lbCounter"></span>
+</div>
+
+<script>
+  /* Nav scroll */
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
+
+  /* Hero load */
+  setTimeout(() => document.getElementById('heroImg').classList.add('loaded'), 80);
+
+  /* Intersection Observer */
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  /* Lightbox */
+  const items = [];
+  document.querySelectorAll('.gallery-item[data-src]').forEach(el => {
+    items.push({ src: el.dataset.src, caption: el.dataset.caption || '' });
+    el.addEventListener('click', () => openLightbox(items.findIndex(it => it.src === el.dataset.src)));
+  });
+
+  let current = 0;
+  const lb = document.getElementById('lightbox');
+  const lbClose = document.getElementById('lbClose');
+  const lbPrev = document.getElementById('lbPrev');
+  const lbNext = document.getElementById('lbNext');
+  const lbContent = document.getElementById('lbContent');
+  const lbCounter = document.getElementById('lbCounter');
+
+  function openLightbox(idx) {
+    current = ((idx % items.length) + items.length) % items.length;
+    renderLightbox();
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+    lbContent.innerHTML = '';
+  }
+  function renderLightbox() {
+    const item = items[current];
+    lbContent.innerHTML = '';
+    if (/\.gif/i.test(item.src)) {
+      const div = document.createElement('div');
+      div.className = 'lightbox-frame';
+      div.style.cssText = 'width:80vw;height:75vh;background-image:url(' + item.src + ');background-size:contain;background-repeat:no-repeat;background-position:center;';
+      lbContent.appendChild(div);
+    } else {
+      const img = document.createElement('img');
+      img.className = 'lightbox-img';
+      img.src = item.src; img.alt = item.caption;
+      lbContent.appendChild(img);
+    }
+    lbCounter.textContent = (current + 1) + ' / ' + items.length;
+    lbPrev.style.display = items.length > 1 ? 'flex' : 'none';
+    lbNext.style.display = items.length > 1 ? 'flex' : 'none';
+  }
+
+  /* Language toggle */
+  function applyLang(lang) {
+    document.querySelectorAll('[data-pt][data-en]').forEach(el => {
+      el.innerHTML = el.dataset[lang];
+    });
+    const btn = document.getElementById('langToggle');
+    if (btn) btn.textContent = lang === 'pt' ? 'EN' : 'PT';
+    localStorage.setItem('rk-lang', lang);
+  }
+  (function() {
+    const saved = localStorage.getItem('rk-lang') || 'pt';
+    applyLang(saved);
+    document.getElementById('langToggle').addEventListener('click', function() {
+      const current = localStorage.getItem('rk-lang') || 'pt';
+      applyLang(current === 'pt' ? 'en' : 'pt');
+    });
+  })();
+
+  lbClose.addEventListener('click', closeLightbox);
+  lbPrev.addEventListener('click', () => { current = (current - 1 + items.length) % items.length; renderLightbox(); });
+  lbNext.addEventListener('click', () => { current = (current + 1) % items.length; renderLightbox(); });
+  lb.addEventListener('click', e => { if (e.target === lb || e.target === lbContent) closeLightbox(); });
+  document.addEventListener('keydown', e => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft')  { current = (current - 1 + items.length) % items.length; renderLightbox(); }
+    if (e.key === 'ArrowRight') { current = (current + 1) % items.length; renderLightbox(); }
+  });
+</script>
+</body>
+</html>
