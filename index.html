@@ -912,7 +912,7 @@
 
 <!-- ── Hero ──────────────────────────────────────────────────────── -->
 <section id="hero">
-  <video class="hero-video-bg" autoplay muted loop playsinline>
+  <video class="hero-video-bg" muted playsinline preload="auto">
     <source src="hero-bg.mp4" type="video/mp4">
   </video>
 <div class="hero-inner">
@@ -1512,6 +1512,26 @@ magnetic('.nav-links a', 0.22);
     el.href = 'mailto:' + u + '@' + d;
     el.textContent = u + '@' + d;
   }
+})();
+
+// ── Scroll-scrub hero video ──────────────────────────────
+(function () {
+  const video = document.querySelector('.hero-video-bg');
+  const hero  = document.getElementById('hero');
+  if (!video || !hero) return;
+
+  function scrub() {
+    if (!video.duration) return;
+    const heroH    = hero.offsetHeight;
+    const progress = Math.min(Math.max(window.scrollY / heroH, 0), 1);
+    video.currentTime = progress * video.duration;
+  }
+
+  video.addEventListener('loadedmetadata', function () {
+    video.currentTime = 0;
+    scrub();
+    window.addEventListener('scroll', scrub, { passive: true });
+  });
 })();
 </script>
 
