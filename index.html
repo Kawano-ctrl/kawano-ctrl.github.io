@@ -176,6 +176,7 @@
     }
 
 
+
     .hero-inner {
       max-width: var(--max);
       margin: 0 auto;
@@ -912,7 +913,7 @@
 
 <!-- ── Hero ──────────────────────────────────────────────────────── -->
 <section id="hero">
-  <video class="hero-video-bg" muted playsinline preload="auto">
+  <video class="hero-video-bg" autoplay muted playsinline preload="auto">
     <source src="hero-bg.mp4" type="video/mp4">
   </video>
 <div class="hero-inner">
@@ -1523,15 +1524,19 @@ magnetic('.nav-links a', 0.22);
   function scrub() {
     if (!video.duration) return;
     const heroH    = hero.offsetHeight;
-    const progress = Math.min(Math.max(window.scrollY / heroH, 0), 1);
+    const progress = Math.min(Math.max(window.scrollY / (heroH * 0.4), 0), 1);
     video.currentTime = progress * video.duration;
   }
 
-  video.addEventListener('loadedmetadata', function () {
+  function init() {
+    video.pause();
     video.currentTime = 0;
     scrub();
     window.addEventListener('scroll', scrub, { passive: true });
-  });
+  }
+
+  // canplay garante que há frames suficientes antes de pausar
+  video.addEventListener('canplay', init, { once: true });
 })();
 </script>
 
