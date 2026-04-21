@@ -137,11 +137,21 @@
     }
     .lang-toggle:hover { border-color: var(--ink); color: var(--ink); }
 
+    /* ─── Hero dark mode lock ───────────────────────── */
+    @media (prefers-color-scheme: dark) {
+      #hero .hero-name   { color: #111110; }
+      #hero .hero-eyebrow { color: #C8A45A; }
+      #hero .hero-tagline { color: #111110; }
+      #hero .hero-actions .hero-link { color: #111110; }
+      #hero .hero-numeral { color: rgba(255,255,255,0.45); }
+      #hero .hero-award   { color: #111110; }
+    }
+
     /* ─── Inkan seal ────────────────────────────────── */
     .hero-inkan {
       position: absolute;
       top: -20px;
-      left: clamp(230px, 29.7vw, 380px);
+      left: clamp(220px, 29.7vw, 380px);
       width: clamp(44px, 5.2vw, 74px);
       height: auto;
       z-index: 10;
