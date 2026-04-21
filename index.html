@@ -142,7 +142,7 @@
       position: absolute;
       top: -20px;
       left: -20px;
-      width: clamp(60px, 7vw, 100px);
+      width: clamp(38px, 4.5vw, 64px);
       height: auto;
       z-index: 10;
       opacity: 0.88;
@@ -301,7 +301,7 @@
       font-size: clamp(160px, 22vw, 280px);
       font-weight: 400;
       line-height: 0.82;
-      color: var(--ghost);
+      color: rgba(255,255,255,0.45);
       letter-spacing: -0.05em;
       margin-left: -60px;     /* intentional bleed toward left col */
       user-select: none;
@@ -1524,7 +1524,7 @@ magnetic('.nav-links a', 0.22);
   function scrub() {
     if (!video.duration) return;
     const heroH    = hero.offsetHeight;
-    const progress = Math.min(Math.max(window.scrollY / (heroH * 0.4), 0), 1);
+    const progress = Math.min(Math.max(window.scrollY / (heroH * 0.15), 0), 1);
     video.currentTime = progress * video.duration;
   }
 
